@@ -1,0 +1,69 @@
+/* General Layout */
+h1, h2 {
+    font-family: sans-serif;
+}
+p,a,li,span{
+    font-family: serif;
+}
+header, header nav{
+    display: flex;
+}
+header, footer{
+    background-color: #00BFFF;
+    color: white;
+}
+header a, footer a{
+    color: white;
+    font-weight: bold;
+}
+header{
+    padding-left: 20px;
+}
+footer, main {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+footer{
+    margin-top: 20px;
+}
+header nav{
+    margin-left: auto;
+    margin-right: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+@media only screen and (max-width: 600px){
+    header{
+        display: block;
+    }
+}
+/* Podcast Layout */
+.pod_box{
+    padding: 10px;
+}
+.podcast{
+    display: flex;
+    padding: 10px;
+    border: 3px solid grey;
+    border-radius: 10px;
+}
+.pod_image{
+    width: 30%;
+    margin-right: 10px;
+}
+.pod_image img{
+    width: 100%;
+}
+.pod_info{
+    width: 70%;
+}
+
+@media only screen and (max-width: 600px){
+    .podcast{
+        display: block;
+    }
+    .pod_image, .pod_info{
+        width: 100%;
+    }
+}
