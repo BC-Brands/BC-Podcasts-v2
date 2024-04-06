@@ -2,7 +2,7 @@
 h1, h2 {
     font-family: sans-serif;
 }
-p,a,li,span{
+p,a,li,span,th,td{
     font-family: serif;
 }
 header, header nav{
@@ -66,4 +66,15 @@ header nav{
     .pod_image, .pod_info{
         width: 100%;
     }
+}
+
+/* Table Layout */
+table{
+    width: 100%;
+}
+th {
+    background-color: #00BFFF;
+    color: white;
+    font-weight: bold;
+    width: 25%;
 }
