@@ -66,7 +66,7 @@ class Database{
     }
     function getPodcastInfo($url){
         try{
-            $stmt = $this->conn->prepare("SELECT podcasts.name, podcasts.author, podcasts.description FROM podcasts WHERE url = :url");
+            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.description FROM podcasts WHERE url = :url");
             $stmt->bindParam(":url", $url);
             $stmt->execute();
 

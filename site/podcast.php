@@ -13,23 +13,53 @@
             </nav>
         </header>
         <main>
-            <h1>Podcast Name</h1>
-            <p>Podcast Author</p>
-            <p>Podcast Description</p>
+            <?php
+            //Dynamically Populate Page 
+            
+            $env = loadCreds();
+
+            $url = htmlspecialchars($_GET["podcast"]);
+
+            $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+            $podcast = $db->getPodcastInfo($url);
+
+            $id = 0;
+
+            if (count($podcast) == 0){
+                echo "<h1>404 Error</h1>";
+                echo "<p>No Podcast Found.</p>";
+            } else {
+                echo "<h1>" . $podcast[0]["name"] . "</h1>";
+                echo "<p>" . $podcast[0]["author"] . "</p>";
+                echo "<p>" . $podcast[0]["description"] . "</p>";
+
+                $id = $podcast[0]["id"];
+            }
+
+            ?>
         </main>
         <div class="pod_box">
-            <div class="podcast">
-                <div class="pod_image">
-                    <img src="https://bcwd.site/bc-brands-trans.png">
-                </div>
-                <div class="pod_info">
-                    <h2><a href="">Episode Name</a></h2>
-                    <p>Episode Description</p>
-                    <audio controls>
+            <?php
+            if (count($podcast) == 0){
+                echo "<p>No Episodes Found.</p>";
+            } else {
+                $episodes = $db->getEpisodes($id);
 
-                    </audio>
-                </div>
-            </div>
+
+                for ($i = 0; $i < count($podcasts); $i++){
+                    echo '<div class="podcast"><div class="pod_image">';
+                    echo '<img src="' . $podcasts[$i]["image"] . '">';
+                    echo '</div><div class="pod_info">';
+                    echo '<h2><a href="">' . $podcasts[$i]["name"] . "</a></h2>";
+                    echo "<p>" . $podcasts[$i]["description"] . "</p>";
+                    echo "<audio controls>";
+                    echo '<source src="' . $podcasts[$i]["audio"] . '" type="audio/mpeg">';
+                    echo "</audio>";
+                    echo "</div></div>";
+                }
+            }
+
+            ?>
         </div>
         <footer>
             <p>Powered by <a href="https://github.com/BC-Brands/BC-Podcasts-v2/">BC Podcasts</a></p>
