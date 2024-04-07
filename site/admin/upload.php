@@ -1,0 +1,58 @@
+<?php
+/*File Upload Script
+
+Please report any vulnerabilities immediately
+to software@bcwd.site.
+
+*/
+
+//From <input type="file" name="upload" />
+
+if (!isset($_FILES["upload"])){
+    die("There is no file to upload");
+}
+
+//Current (temp) filepath
+$filepath = $_FILES["upload"]["tmp_name"];
+
+//Get the size
+$filesize = filesize($filepath);
+
+//Get file information
+$fileinfo = finfo_open(FILEINFO_MIME_TYPE);
+$filetype = finfo_file($fileinfo, $filepath);
+
+if ($filesize === 0){
+    die("The file is empty.");
+}
+
+//Set the maximum file size at 200 MB
+if ($filesize > (1 * 1024 * 1024 * 200)){
+    die("The file is too large.");
+}
+
+//Allowed Types
+$allowedTypes = [
+    "audio/mpeg" => "mp3"
+];
+
+if (!in_array($filetype, array_keys($allowedTypes))){
+    die("File not allowed");
+}
+
+//Validation Complete, move the file into uoploads.
+//Generate Random Filename
+$filename = substr(base64_encode(sha256(mt_rand())), 0, 32);
+$extension = $allowedTypes[$filetype];
+$targetDirectory = __DIR__ . "../files/";
+$newFilepath = $targetDirectory . $filename . "." . $extension;
+
+if (!move_uploaded_file($filepath, $targetDirectory)){
+    die("Can't move file");
+}
+
+//Remove Temp File
+unlink($filepath);
+
+echo "File Uploaded successfully.";
+?>
