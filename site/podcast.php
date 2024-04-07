@@ -15,6 +15,7 @@
         <main>
             <?php
             //Dynamically Populate Page 
+            require "./backend/creds.php";
             
             $env = loadCreds();
 

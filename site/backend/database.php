@@ -44,6 +44,7 @@ class Database{
                 name VARCHAR(50) NOT NULL,
                 description TEXT,
                 image TEXT,
+                published DATETIME,
                 audio TEXT
                 )";
 
@@ -55,7 +56,7 @@ class Database{
 
     function getPodcasts(){
         try{
-            $stmt = $this->conn->prepare("SELECT podcasts.name, podcasts.url, podcasts.author, podcasts.description, podcasts.image, episodes.name, episodes.audio FROM podcasts, episodes WHERE podcasts.latest = episodes.id");
+            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.url, podcasts.author, podcasts.description, podcasts.image, episodes.name, episodes.audio FROM podcasts, episodes WHERE podcasts.latest = episodes.id");
             $stmt->execute();
 
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -80,6 +81,17 @@ class Database{
         try{
             $stmt = $this->conn->prepare("SELECT episodes.name, episodes.description, episodes.image, episodes.audio FROM podcasts, episodes WHERE episodes.podcast = podcasts.id AND podcasts.id = :id");
             $stmt->bindParam(":id", $podcast);
+            $stmt->execute();
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
+        } catch (PDOException $e){
+            die("Error fetching data");
+        }
+    }
+    function getAllEpisodes(){
+        try{
+            $stmt = $this->conn->prepare("SELECT episodes.id, episodes.name, episodes.published, podcasts.name, podcasts.url FROM podcasts, episodes WHERE episodes.podcast = podcasts.id");
             $stmt->execute();
 
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);

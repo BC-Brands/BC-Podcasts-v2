@@ -15,7 +15,7 @@
         <main>
             <h1>BC Podcasts</h1>
             <p>Login to your self-hosting dashboard.</p>
-            <form action="home.php" method="POST">
+            <form action="verif.php" method="POST">
                 <p>Username</p>
                 <input type="text" name="username"><br>
                 <p>Password</p>

@@ -1,3 +1,12 @@
+<?php
+ini_set('session.name', 'BCPodcasts');
+session_start();
+                    
+if ($_SESSION["state"] != "active") {
+    header("Location: login.php");
+}
+
+?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -28,14 +37,28 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Author</th>
+                    <th>Latest Episode</th>
                     <th>Actions</th>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Test Podcast</td>
-                    <td>BC Brands</td>
-                    <td><a href="">View</a> | <a href="">Edit</a> | <a href="">Remove</a></td>
-                </tr>
+                <?php
+                require "../backend/creds.php";
+
+                $env = loadCreds();
+
+                $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+                $podcasts = $db->getPodcasts();
+
+                for ($i = 0; $i < count($podcasts); $i++){
+                    echo "<tr>";
+                    echo "<td>" . $podcasts[$i]["id"] . "</td>";
+                    echo "<td>" . $podcasts[$i]["name"] . "</td>";
+                    echo "<td>" . $podcasts[$i]["author"] . "</td>";
+                    echo "<td>" . $podcasts[$i]["name"] . "</td>";
+                    echo '<td><a href="../podcast/' . $podcasts[$i]["url"] . '">View</a> | <a href="./edit/podcast/' . $podcasts[$i]["id"] . '">Edit</a></td>';
+                    echo "</tr>";
+                }
+
+                ?>
             </table>
         </div>
         <div id="episode">
@@ -44,16 +67,30 @@
             <table>
                 <tr>
                     <th>ID</th>
+                    <th>Podcast</th>
                     <th>Name</th>
                     <th>Publish Date</th>
                     <th>Actions</th>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Test Podcast</td>
-                    <td>BC Brands</td>
-                    <td><a href="">View</a> | <a href="">Edit</a> | <a href="">Remove</a></td>
-                </tr>
+                <?php
+                require "../backend/creds.php";
+
+                $env = loadCreds();
+
+                $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+                $episodes = $db->getAllEpisodes();
+
+                for ($i = 0; $i < count($episodes); $i++){
+                    echo "<tr>";
+                    echo "<td>" . $episodes[$i]["id"] . "</td>";
+                    echo "<td>" . $episodes[$i]["name"] . "</td>";
+                    echo "<td>" . $episodes[$i]["name"] . "</td>";
+                    echo "<td>" . $episodes[$i]["published"] . "</td>";
+                    echo '<td><a href="../podcast/' . $episodes[$i]["url"] . '">View</a> | <a href="./edit/episode/' . $episodes[$i]["id"] . '">Edit</a></td>';
+                    echo "</tr>";
+                }
+
+                ?>
             </table>
         </div>
         <script>

@@ -19,6 +19,7 @@
         <div class="pod_box">
             <?php
             //Dynamically Populate Page 
+            require "./backend/creds.php";
             
             $env = loadCreds();
 
