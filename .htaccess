@@ -1,0 +1,7 @@
+RewriteEngine on
+
+# Exclude Data Directories
+RewriteRule ^(data|files)($|/) - [L]
+
+# Rewrite remaining requests for /site/ to base path
+RewriteRule ^(.*)$ /site/$1
