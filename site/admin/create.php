@@ -1,7 +1,8 @@
 <?php
 ini_set('session.name', 'BCPodcasts');
 session_start();
-                    
+
+//Check if user is logged in (authentication required)
 if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
@@ -55,6 +56,7 @@ if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
 
                     $env = loadCreds();
 
+                    //Get list of podcasts and their IDs
                     $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
                     $podcasts = $db->getPodcasts();
 

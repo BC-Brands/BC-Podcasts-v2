@@ -27,6 +27,7 @@
             $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
             $podcasts = $db->getPodcasts();
 
+            //Display list of podcasts
             for ($i = 0; $i < count($podcasts); $i++){
                 echo '<div class="podcast"><div class="pod_image">';
                 echo '<img src="' . rtrim($env["fqdn"], "/") . $podcasts[$i]["image"] . '">';

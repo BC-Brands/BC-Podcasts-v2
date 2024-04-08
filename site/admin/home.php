@@ -1,7 +1,8 @@
 <?php
 ini_set('session.name', 'BCPodcasts');
 session_start();
-                    
+
+//Check if user is logged in (authentication required)
 if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
@@ -49,6 +50,8 @@ if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
                 $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
                 $podcasts = $db->getPodcasts();
 
+                //List podcasts in table
+
                 for ($i = 0; $i < count($podcasts); $i++){
                     echo "<tr>";
                     echo "<td>" . $podcasts[$i]["id"] . "</td>";
@@ -75,6 +78,8 @@ if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
                 </tr>
                 <?php
                 $episodes = $db->getAllEpisodes();
+
+                //List episodes in table
 
                 for ($i = 0; $i < count($episodes); $i++){
                     echo "<tr>";

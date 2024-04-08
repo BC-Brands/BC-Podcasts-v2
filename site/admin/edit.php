@@ -1,11 +1,13 @@
 <?php
 ini_set('session.name', 'BCPodcasts');
 session_start();
-                    
+
+//Check if user is logged in (authentication required)
 if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
 
+//Make sure type and ID are set
 if (isset($_GET["type"])){
     $type = htmlspecialchars($_GET["type"]);
 } else {
@@ -45,6 +47,7 @@ if (isset($_GET["id"])){
         $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 
         if ($type == "podcast"){
+            //Get Podcast Information to put in form
             $url = $db->getPodcastURL($id);
             $podcasts = $db->getPodcastInfo($url[0]["url"]);
             
@@ -68,6 +71,7 @@ FORM;
             echo $form;
         }
         if ($type == "episode"){
+            //Get episode information to put in form
             $episode = $db->getEpisode($id);
 
             $form = <<<FORM

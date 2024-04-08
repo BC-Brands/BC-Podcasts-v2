@@ -1,4 +1,9 @@
 <?php
+//Check if user is logged in (authentication required)
+if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
+    header("Location: login.php");
+}
+
 //Upload Podcast
 
 $name = htmlspecialchars($_POST["name"]);

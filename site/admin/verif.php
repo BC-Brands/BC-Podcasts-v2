@@ -8,7 +8,9 @@ $password = htmlspecialchars($_POST["password"]);
 
 $env = loadCreds();
 
+//Check if username and password match
 if (($username == $env["username"]) and ($password == $env["password"])){
+    //Set PHP session
     session_start();
     $_SESSION["state"] = "active";
     header("Location: home.php");

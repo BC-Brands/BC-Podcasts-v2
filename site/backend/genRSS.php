@@ -5,6 +5,7 @@ require_once("creds.php");
 function genRSS($podcast_url){
     $env = loadCreds();
 
+    //Get podcast and episode information
     $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
     $podcast = $db->getPodcastInfo($podcast_url);
 
@@ -14,16 +15,18 @@ function genRSS($podcast_url){
 
     //podcasts.id, podcasts.name, podcasts.author, podcasts.description
 
+    //Folder to store RSS data in
     $filepath =  __DIR__ . "/../data/" . $podcast_url . "/feed.rss";
     $dir = __DIR__ . "/../data/" . $podcast_url . "/";
 
-    
+    //Make folder if it does not exist
     if (!file_exists($filepath)){
         mkdir($dir, 0755, true); 
         $file = fopen($filepath, "x");
         fclose($file);
     }
 
+    //Generate Podcast Metadata
     $file = fopen($filepath, "w") or die("Unable to open file!");
 
     $fqdnURL = $env["fqdn"] . "/" . $podcast_url;
@@ -71,15 +74,7 @@ XML;
 
     fwrite($file, $xml);
 
-    /*
-                    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                    podcast INT(6) UNSIGNED,
-                    name VARCHAR(50) NOT NULL,
-                    description TEXT,
-                    image TEXT,
-                    published DATETIME,
-                    audio TEXT
-    */
+    //Generate Episode Metadata
     for ($i = 0; $i < count($episodes); $i++){
         $audio = rtrim($env["fqdn"], "/") . $episodes[$i]["audio"];
         $image = rtrim($env["fqdn"], "/") . $episodes[$i]["image"];

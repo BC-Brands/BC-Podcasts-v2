@@ -22,6 +22,7 @@
 
             $url = htmlspecialchars($_GET["podcast"]);
 
+            //Display podcast information
             $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
             $podcast = $db->getPodcastInfo($url);
 
@@ -44,6 +45,7 @@
             <?php
             $episodes = $db->getEpisodes($id);
 
+            //Display list of episodes
             if (count($episodes) == 0){
                 echo "<p>No Episodes Found.</p>";
             } else {
