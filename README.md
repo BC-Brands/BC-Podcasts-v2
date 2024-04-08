@@ -5,8 +5,17 @@ We're making our source code from our 2021 (revised 2024) podcast management pla
 BC Podcasts allows podcast makers to host their files on their own servers. They can then distribute these to popular podcast platforms, including our BC Podcasts directory.
 
 ## Setup
+### Requirements
+We suggest the following requirements are met, altough it may be possible for BC Podcasts to run on older versions than listed below.
+- Linux (with bash)
+- A Web Server, such as Apache or Nginx.
+- PHP (version 7.0 or greater)
+- PHP Data Objects (PDO) enabled.
+- MySQL 8.0
+
 *The following setup has been tested for Ubuntu Server 18.04.5 LTS running Nginx on Microsoft Azure.*
 
+### Instructions
 1. Setup your server.
 2. Clone a copy of this repository into the /var/www/html/ (or equivalent) directory.
 3. Run `./setup.sh` to setup the software.
