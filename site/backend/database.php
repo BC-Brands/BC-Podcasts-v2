@@ -34,6 +34,7 @@ class Database{
                 name VARCHAR(50) NOT NULL,
                 url VARCHAR(25) NOT NULL,
                 author VARCHAR(50) NOT NULL,
+                authorEmail VARCHAR(50),
                 description TEXT,
                 image TEXT,
                 latest INT(6) UNSIGNED
@@ -101,9 +102,21 @@ class Database{
             die("Error fetching data");
         }
     }
+    function getPodcastURL($id){
+        try{
+            $stmt = $this->conn->prepare("SELECT podcasts.url FROM podcasts WHERE podcasts.id = :id");
+            $stmt->bindParam(":id", $id);
+            $stmt->execute();
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
+        } catch (PDOException $e){
+            die("Error fetching data");
+        }
+    }
     function getPodcastInfo($url){
         try{
-            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.description FROM podcasts WHERE url = :url");
+            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.authorEmail, podcasts.description FROM podcasts WHERE url = :url");
             $stmt->bindParam(":url", $url);
             $stmt->execute();
 

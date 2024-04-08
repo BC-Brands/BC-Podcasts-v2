@@ -68,7 +68,7 @@ unlink($filepath);
 echo "File Uploaded successfully.";
 
 // Add Podcast
-$imageName = "./files/" . $filename . "." . $extension;
+$imageName = "/files/" . $filename . "." . $extension;
 
 require "../backend/creds.php";
 

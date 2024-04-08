@@ -79,7 +79,7 @@ unlink($filepath);
 
 echo "File Uploaded successfully.";
 
-$imageName = "./files/" . $filename . "." . $extension;
+$imageName = "/files/" . $filename . "." . $extension;
 
 $fileField = "audio";
 
@@ -143,7 +143,7 @@ unlink($filepath);
 echo "File Uploaded successfully.";
 
 // Add Podcast
-$audioName = "./files/" . $filename . "." . $extension;
+$audioName = "/files/" . $filename . "." . $extension;
 
 require "../backend/creds.php";
 
@@ -151,6 +151,11 @@ $env = loadCreds();
 
 $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 $db->createEpisode($podcast, $name, $description, $imageName, $audioName);
+$url = $db->getPodcastURL($podcast);
+
+require "../backend/genRSS.php";
+
+genRSS($url[0]);
 
 header("Location: home.php");
 ?>
