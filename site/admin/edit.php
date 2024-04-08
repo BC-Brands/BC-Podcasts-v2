@@ -37,9 +37,12 @@ if (isset($_GET["id"])){
             <h1>Edit</h1>
         </main>
         <?php
+        require "../backend/creds.php";
+        require "../backend/database.php";
+
         $env = loadCreds();
 
-        $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+        $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 
         if ($type == "podcast"){
             $url = $db->getPodcastURL($id);
@@ -65,7 +68,7 @@ if (isset($_GET["id"])){
             echo $form;
         }
         if ($type == "episode"){
-            $episode = $db->getEpidose($id);
+            $episode = $db->getEpisode($id);
 
             $form = <<<FORM
             <div id="episode">

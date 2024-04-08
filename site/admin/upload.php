@@ -71,10 +71,11 @@ echo "File Uploaded successfully.";
 $imageName = "/files/" . $filename . "." . $extension;
 
 require "../backend/creds.php";
+require "../backend/database.php";
 
 $env = loadCreds();
 
-$db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+$db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 $db->createPodcast($name, $url, $author, $description, $imageName);
 
 header("Location: home.php");

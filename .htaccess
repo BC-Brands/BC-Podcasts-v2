@@ -1,15 +1,21 @@
 RewriteEngine on
 
-# Exclude Data Directories
-RewriteRule ^(data|files)($|/) - [L]
+# Data Directories
+RewriteRule ^data/(.*) site/data/$1 [L]
+RewriteRule ^files/(.*) site/files/$1 [L]
+RewriteRule ^assets/(.*) site/assets/$1 [L]
 
-# Rewrite URLS to remove extensions
-RewriteRule ^podcast/(.*)$ podcast.php?podcast=$1
-RewriteRule ^admin/?$ admin/login.php
-RewriteRule ^admin/home/?$ admin/home.php
-RewriteRule ^admin/create/?$ admin/create.php
-RewriteRule ^admin/edit/podcast/(.*)$ admin/edit.php?type=podcast&id=$1
-RewriteRule ^admin/edit/episode/(.*)$ admin/edit.php?type=episode&id=$1
+# Rewrite URLS
+RewriteRule ^$ site/index.php [L]
+RewriteRule ^podcast/(.*)$ site/podcast.php?podcast=$1 [L]
 
-# Rewrite remaining requests for /site/ to base path
-RewriteRule ^(.*)$ /site/$1
+# Admin
+RewriteRule ^admin/?$ site/admin/login.php [L]
+RewriteRule ^admin/home/?$ site/admin/home.php [L]
+RewriteRule ^admin/create/?$ site/admin/create.php [L]
+RewriteRule ^admin/edit/podcast/(.*)$ site/admin/edit.php?type=podcast&id=$1 [L]
+RewriteRule ^admin/edit/episode/(.*)$ site/admin/edit.php?type=episode&id=$1 [L]
+
+RewriteRule ^admin/(.*)$ site/admin/$1
+
+# Backend needs no routing

@@ -119,7 +119,7 @@ class Database{
 
     function getPodcasts(){
         try{
-            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.url, podcasts.author, podcasts.description, podcasts.image, episodes.name, episodes.audio FROM podcasts, episodes WHERE podcasts.latest = episodes.id");
+            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.url, podcasts.author, podcasts.description, podcasts.image, episodes.name AS epname, episodes.audio FROM podcasts, episodes WHERE podcasts.latest = episodes.id");
             $stmt->execute();
 
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -190,7 +190,7 @@ class Database{
     }
     function getAllEpisodes(){
         try{
-            $stmt = $this->conn->prepare("SELECT episodes.id, episodes.name, episodes.published, podcasts.name, podcasts.url FROM podcasts, episodes WHERE episodes.podcast = podcasts.id");
+            $stmt = $this->conn->prepare("SELECT episodes.id, episodes.name AS epname, episodes.published, podcasts.name, podcasts.url FROM podcasts, episodes WHERE episodes.podcast = podcasts.id");
             $stmt->execute();
 
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);

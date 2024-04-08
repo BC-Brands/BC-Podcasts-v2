@@ -79,7 +79,7 @@ if ($_SESSION["state"] != "active") {
                     echo "<tr>";
                     echo "<td>" . $episodes[$i]["id"] . "</td>";
                     echo "<td>" . $episodes[$i]["name"] . "</td>";
-                    echo "<td>" . $episodes[$i]["name"] . "</td>";
+                    echo "<td>" . $episodes[$i]["epname"] . "</td>";
                     echo "<td>" . $episodes[$i]["published"] . "</td>";
                     echo '<td><a href="../podcast/' . $episodes[$i]["url"] . '">View</a> | <a href="./edit/episode/' . $episodes[$i]["id"] . '">Edit</a></td>';
                     echo "</tr>";

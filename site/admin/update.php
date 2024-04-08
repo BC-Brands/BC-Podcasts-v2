@@ -3,9 +3,11 @@ $type = htmlspecialchars($_GET["type"]);
 $id = htmlspecialchars($_GET["id"]);
 
 require "../backend/database.php";
+require "../backend/creds.php";
+
 $env = loadCreds();
 
-$db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+$db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 
 if ($type == "podcast"){
     $name = htmlspecialchars($_POST["name"]);

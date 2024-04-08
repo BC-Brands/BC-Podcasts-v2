@@ -146,10 +146,11 @@ echo "File Uploaded successfully.";
 $audioName = "/files/" . $filename . "." . $extension;
 
 require "../backend/creds.php";
+require "../backend/database.php";
 
 $env = loadCreds();
 
-$db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+$db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
 $db->createEpisode($podcast, $name, $description, $imageName, $audioName);
 $url = $db->getPodcastURL($podcast);
 

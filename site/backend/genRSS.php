@@ -1,8 +1,11 @@
 <?php
+require "database.php";
+require "creds.php";
+
 function genRSS($podcast_url){
     $env = loadCreds();
 
-    $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+    $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
     $podcast = $db->getPodcastInfo($podcast_url);
 
     $episodes = $db->getEpisodes($podcast[0]["id"]);
