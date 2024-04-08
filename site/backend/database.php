@@ -8,7 +8,7 @@ class Database{
 
     private $conn;
 
-    function __constuct($username, $password, $servername, $dbname){
+    function __construct($username, $password, $servername, $dbname){
         $this->username = $username;
         $this->password = $password;
         $this->servername = $servername;
@@ -46,7 +46,8 @@ class Database{
                 description TEXT,
                 image TEXT,
                 published DATETIME,
-                audio TEXT
+                audio TEXT,
+                duration TIME
                 )";
 
             $this->conn->exec($sql);
@@ -70,17 +71,18 @@ class Database{
         }          
     }
 
-    function createEpisode($podcast, $name, $description, $image, $audio){
+    function createEpisode($podcast, $name, $description, $image, $audio, $duration){
         try{
-            $stmt = $this->conn->prepare("INSERT INTO episodes (podcast, name, description, image, published, audio) VALUES (:podcast, :name, :description, :image, NOW(), :audio");
+            $stmt = $this->conn->prepare("INSERT INTO episodes (podcast, name, description, image, published, audio, duration) VALUES (:podcast, :name, :description, :image, NOW(), :audio, :duration)");
             $stmt->bindParam(":podcast", $podcast);
             $stmt->bindParam(":name", $name);
             $stmt->bindParam(":description", $description);
             $stmt->bindParam(":image", $image);
             $stmt->bindParam(":audio", $audio);
+            $stmt->bindParam(":duration", $duration);
             $stmt->execute();
 
-            $last_id = $conn->insert_id;
+            $last_id = $this->conn->lastInsertId();
 
             $stmt = $this->conn->prepare("UPDATE podcasts SET latest = :latest WHERE id = :podcast");
             $stmt->bindParam(":latest", $last_id);
@@ -154,7 +156,7 @@ class Database{
     }
     function getPodcastInfo($url){
         try{
-            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.authorEmail, podcasts.description FROM podcasts WHERE url = :url");
+            $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.authorEmail, podcasts.description, podcasts.url, podcasts.image FROM podcasts WHERE url = :url");
             $stmt->bindParam(":url", $url);
             $stmt->execute();
 
@@ -166,7 +168,7 @@ class Database{
     }
     function getEpisodes($podcast){
         try{
-            $stmt = $this->conn->prepare("SELECT episodes.name, episodes.description, episodes.image, episodes.audio FROM podcasts, episodes WHERE episodes.podcast = podcasts.id AND podcasts.id = :id");
+            $stmt = $this->conn->prepare("SELECT episodes.id, episodes.name, episodes.description, episodes.image, episodes.audio, episodes.published, episodes.duration FROM podcasts, episodes WHERE episodes.podcast = podcasts.id AND podcasts.id = :id");
             $stmt->bindParam(":id", $podcast);
             $stmt->execute();
 

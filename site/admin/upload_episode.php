@@ -1,22 +1,10 @@
 <?php
 //Upload Episode
 
-<p>Podcast</p>
-<select name="podcast">
-    <option value=""></option>
-</select>
-<p>Episode Name</p>
-<input type="text" name="name">
-<p>Episode Description</p>
-<input type="text" name="description">
-<p>Episode Image</p>
-<input type="file" name="image" />
-<p>Episode Audio</p>
-<input type="file" name="audio" />
-
 $podcast = intval(htmlspecialchars($_POST["podcast"]));
 $name = htmlspecialchars($_POST["name"]);
 $description = htmlspecialchars($_POST["description"]);
+$duration = htmlspecialchars($_POST["duration"]);
 
 $fileField = "image";
 
@@ -65,17 +53,17 @@ if (!in_array($filetype, array_keys($allowedTypes))){
 
 //Validation Complete, move the file into uoploads.
 //Generate Random Filename
-$filename = substr(base64_encode(sha256(mt_rand())), 0, 32);
+$filename = substr(base64_encode(hash('sha256', mt_rand())), 0, 32);
 $extension = $allowedTypes[$filetype];
-$targetDirectory = __DIR__ . "../files/";
+$targetDirectory = __DIR__ . "/../files/";
 $newFilepath = $targetDirectory . $filename . "." . $extension;
 
-if (!move_uploaded_file($filepath, $targetDirectory)){
+if (!move_uploaded_file($filepath, $newFilepath)){
     die("Can't move file");
 }
 
 //Remove Temp File
-unlink($filepath);
+//unlink($filepath);
 
 echo "File Uploaded successfully.";
 
@@ -128,17 +116,17 @@ if (!in_array($filetype, array_keys($allowedTypes))){
 
 //Validation Complete, move the file into uoploads.
 //Generate Random Filename
-$filename = substr(base64_encode(sha256(mt_rand())), 0, 32);
+$filename = substr(base64_encode(hash('sha256', mt_rand())), 0, 32);
 $extension = $allowedTypes[$filetype];
-$targetDirectory = __DIR__ . "../files/";
+$targetDirectory = __DIR__ . "/../files/";
 $newFilepath = $targetDirectory . $filename . "." . $extension;
 
-if (!move_uploaded_file($filepath, $targetDirectory)){
+if (!move_uploaded_file($filepath, $newFilepath)){
     die("Can't move file");
 }
 
 //Remove Temp File
-unlink($filepath);
+//unlink($filepath);
 
 echo "File Uploaded successfully.";
 
@@ -151,12 +139,12 @@ require "../backend/database.php";
 $env = loadCreds();
 
 $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
-$db->createEpisode($podcast, $name, $description, $imageName, $audioName);
+$db->createEpisode($podcast, $name, $description, $imageName, $audioName, $duration);
 $url = $db->getPodcastURL($podcast);
 
 require "../backend/genRSS.php";
 
-genRSS($url[0]);
+genRSS($url[0]["url"]);
 
 header("Location: home.php");
 ?>

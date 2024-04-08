@@ -2,7 +2,7 @@
 ini_set('session.name', 'BCPodcasts');
 session_start();
                     
-if ($_SESSION["state"] != "active") {
+if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
 
@@ -24,7 +24,7 @@ if (isset($_GET["id"])){
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BC Podcasts</title>
-        <link rel="stylesheet" href="../assets/style.css">
+        <link rel="stylesheet" href="../../../assets/style.css">
     </head>
     <body>
         <header>
@@ -46,9 +46,9 @@ if (isset($_GET["id"])){
 
         if ($type == "podcast"){
             $url = $db->getPodcastURL($id);
-            $podcasts = $db->getPodcast($url[0]);
+            $podcasts = $db->getPodcastInfo($url[0]["url"]);
             
-            $form = <<<FORM 
+            $form = <<<FORM
             <div id="podcast">
                 <form action="update.php?type=podcast&id={$id}" method="POST">
                     <p>Podcast Name</p>
@@ -63,7 +63,7 @@ if (isset($_GET["id"])){
                     <input type="submit" value="Update">
                 </form>
             </div>
-            FORM;
+FORM;
 
             echo $form;
         }
@@ -81,7 +81,7 @@ if (isset($_GET["id"])){
                     <input type="submit" value="Update">
                 </form>
             </div>
-            FORM;
+FORM;
 
             echo $form;
         }

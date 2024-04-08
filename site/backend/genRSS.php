@@ -1,6 +1,6 @@
 <?php
-require "database.php";
-require "creds.php";
+require_once("database.php");
+require_once("creds.php");
 
 function genRSS($podcast_url){
     $env = loadCreds();
@@ -14,9 +14,22 @@ function genRSS($podcast_url){
 
     //podcasts.id, podcasts.name, podcasts.author, podcasts.description
 
-    $filepath = "../data/" . $podcast_url . "/feed.rss";
+    $filepath =  __DIR__ . "/../data/" . $podcast_url . "/feed.rss";
+    $dir = __DIR__ . "/../data/" . $podcast_url . "/";
+
+    
+    if (!file_exists($filepath)){
+        mkdir($dir, 0755, true); 
+        $file = fopen($filepath, "x");
+        fclose($file);
+    }
 
     $file = fopen($filepath, "w") or die("Unable to open file!");
+
+    $fqdnURL = $env["fqdn"] . "/" . $podcast_url;
+    $imageURL = $env["fqdn"] . $podcast[0]["image"];
+    
+    $currentDate = date("D, d M Y H:i:s O");
 
     $xml = <<<XML
     <?xml version="1.0" encoding="UTF-8"?>
@@ -24,25 +37,25 @@ function genRSS($podcast_url){
         <channel>
             <atom:link href="{$feedURL}" rel="self" type="application/rss+xml"/>
             <title>{$podcast[0]["name"]}</title>
-            <pubDate>Tue, 08 Aug 2023 21:05:00 +0000</pubDate>
-            <lastBuildDate>Wed, 03 Apr 2024 20:02:01 +0000</lastBuildDate>
+            <pubDate>{$currentDate}</pubDate>
+            <lastBuildDate>{$currentDate}</lastBuildDate>
             <generator>BC Podcasts</generator>
-            <link>{$env["fqdn"] . "/" . $podcast_url}</link>
+            <link>{$fqdnURL}</link>
             <language>en</language>
             <copyright><![CDATA[Copyright (C). All rights resevred.]]></copyright>
-            <docs>{$env["fqdn"] . "/" . $podcast_url}</docs>
+            <docs>{$fqdnURL}</docs>
             <managingEditor>{$podcast[0]["authorEmail"]}</managingEditor>
             <itunes:summary><![CDATA[{$podcast[0]["description"]}]]></itunes:summary>
             <image>
-                <url>{$env["fqdn"] . $podcast[0]["image"]}</url>
+                <url>{$imageURL}</url>
                 <title>{$podcast[0]["name"]}</title>
-                <link><![CDATA[{$env["fqdn"] . "/" . $podcast_url}]]></link>
+                <link><![CDATA[{$fqdnURL}]]></link>
             </image>
             <itunes:author>{$podcast[0]["author"]}</itunes:author>
             <itunes:keywords>podcast</itunes:keywords>
             <itunes:category text="Speech">
             </itunes:category>
-            <itunes:image href="{$env['fqdn'] . $podcast[0]['image']}" />
+            <itunes:image href="{$imageURL}" />
             <itunes:explicit>false</itunes:explicit>
             <itunes:owner>
                 <itunes:name><![CDATA[{$podcast[0]["author"]}]]></itunes:name>
@@ -54,7 +67,7 @@ function genRSS($podcast_url){
 
 
             <podcast:locked owner="{$podcast[0]['authorEmail']}">no</podcast:locked>
-    XML;
+XML;
 
     fwrite($file, $xml);
 
@@ -68,18 +81,26 @@ function genRSS($podcast_url){
                     audio TEXT
     */
     for ($i = 0; $i < count($episodes); $i++){
+        $audio = rtrim($env["fqdn"], "/") . $episodes[$i]["audio"];
+        $image = rtrim($env["fqdn"], "/") . $episodes[$i]["image"];
+
+        sscanf($episodes[$i]["duration"], "%d:%d:%d", $hours, $minutes, $seconds);
+        $time_seconds = $hours * 3600 + $minutes * 60 + $seconds;
+        
+        $episodeDate = date("D, d M Y H:i:s O", strtotime($episodes[$i]['published']));
+
         $item = <<<XML
                 <item>
                     <title>{$episodes[$i]["name"]}</title>
                     <itunes:title>{$episodes[$i]["name"]}</itunes:title>
-                    <pubDate>{$episodes[$i]['published']}</pubDate>
+                    <pubDate>{$episodeDate}</pubDate>
                     <guid isPermaLink="false"><![CDATA[{$episodes[$i]["id"]}]]></guid>
                     <link><![CDATA[{$env['fqdn']}]]></link>
-                    <itunes:image href="{$episodes[$i]['image']}" />
+                    <itunes:image href="{$image}" />
                     <description><![CDATA[{$episodes[$i]["description"]}]]></description>
                     <content:encoded><![CDATA[{$episodes[$i]["description"]}]]></content:encoded>
-                    <enclosure length="101647475" type="audio/mpeg" url="{$env['fqdn'] . $episodes[$i]['audio']}" />
-                    <itunes:duration>01:00:00</itunes:duration>
+                    <enclosure length="{$time_seconds}" type="audio/mpeg" url="{$audio}" />
+                    <itunes:duration>{$episodes[$i]["duration"]}</itunes:duration>
                     <itunes:explicit>false</itunes:explicit>
                     <itunes:keywords>Podcast</itunes:keywords>
                     <itunes:subtitle><![CDATA[{$episodes[$i]["description"]}]]></itunes:subtitle>
@@ -87,7 +108,7 @@ function genRSS($podcast_url){
                 </item>
             </channel>
         </rss>
-        XML;
+XML;
         fwrite($file, $item);
     }
 

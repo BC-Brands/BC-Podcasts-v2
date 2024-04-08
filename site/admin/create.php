@@ -2,7 +2,7 @@
 ini_set('session.name', 'BCPodcasts');
 session_start();
                     
-if ($_SESSION["state"] != "active") {
+if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
 
@@ -29,7 +29,7 @@ if ($_SESSION["state"] != "active") {
             </div>
         </main>
         <div id="podcast">
-            <form action="upload.php" method="POST">
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
                 <p>Podcast Name</p>
                 <input type="text" name="name">
                 <p>Podcast URL</p>
@@ -45,10 +45,23 @@ if ($_SESSION["state"] != "active") {
             </form>
         </div>
         <div id="episode">
-            <form action="upload_episode.php" method="POST">
+            <form action="upload_episode.php" method="POST" enctype="multipart/form-data">
                 <p>Podcast</p>
                 <select name="podcast">
-                    <option value=""></option>
+                    <option value="" disabled selected>-- Please Select --</option>
+                    <?php
+                    require "../backend/creds.php";
+                    require "../backend/database.php";
+
+                    $env = loadCreds();
+
+                    $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+                    $podcasts = $db->getPodcasts();
+
+                    for ($i = 0; $i < count($podcasts); $i++){
+                        echo "<option value='" . $podcasts[$i]["id"] . "'>" . $podcasts[$i]["name"] . "</option>";
+                    }
+                ?>
                 </select>
                 <p>Episode Name</p>
                 <input type="text" name="name">
@@ -58,6 +71,8 @@ if ($_SESSION["state"] != "active") {
                 <input type="file" name="image" />
                 <p>Episode Audio</p>
                 <input type="file" name="audio" />
+                <p>Duration</p>
+                <input type="text" name="duration">
                 <br>
                 <input type="submit" value="Create">
             </form>

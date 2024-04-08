@@ -29,16 +29,16 @@
 
             for ($i = 0; $i < count($podcasts); $i++){
                 echo '<div class="podcast"><div class="pod_image">';
-                echo '<img src="' . $podcasts[$i]["image"] . '">';
+                echo '<img src="' . rtrim($env["fqdn"], "/") . $podcasts[$i]["image"] . '">';
                 echo '</div><div class="pod_info">';
-                echo '<h2><a href="' . $podcasts[$i]["url"] . '">' . $podcasts[$i]["name"] . "</a></h2>";
+                echo '<h2><a href="' . rtrim($env["fqdn"], "/") . "/podcast/" . $podcasts[$i]["url"] . '">' . $podcasts[$i]["name"] . "</a></h2>";
                 echo '<p>' . $podcasts[$i]["author"] . "</p>";
                 echo "<p>" . $podcasts[$i]["description"] . "</p>";
                 echo "<hr>";
                 echo "<p><b>Latest Episode</b></p>";
                 echo "<p>" . $podcasts[$i]["epname"] . "</p>";
                 echo "<audio controls>";
-                echo '<source src="' . $podcasts[$i]["audio"] . '" type="audio/mpeg">';
+                echo '<source src="' . rtrim($env["fqdn"], "/") . $podcasts[$i]["audio"] . '" type="audio/mpeg">';
                 echo "</audio>";
                 echo "</div></div>";
             }

@@ -55,10 +55,10 @@ if (!in_array($filetype, array_keys($allowedTypes))){
 //Generate Random Filename
 $filename = substr(base64_encode(sha256(mt_rand())), 0, 32);
 $extension = $allowedTypes[$filetype];
-$targetDirectory = __DIR__ . "../files/";
+$targetDirectory = __DIR__ . "/../files/";
 $newFilepath = $targetDirectory . $filename . "." . $extension;
 
-if (!move_uploaded_file($filepath, $targetDirectory)){
+if (!move_uploaded_file($filepath, $newFilepath)){
     die("Can't move file");
 }
 

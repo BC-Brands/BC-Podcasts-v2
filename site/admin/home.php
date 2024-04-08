@@ -2,7 +2,7 @@
 ini_set('session.name', 'BCPodcasts');
 session_start();
                     
-if ($_SESSION["state"] != "active") {
+if ((isset($_SESSION["state"]) == false) || ($_SESSION["state"] != "active")) {
     header("Location: login.php");
 }
 
@@ -30,7 +30,7 @@ if ($_SESSION["state"] != "active") {
             </div>
         </main>
         <div id="podcast">
-            <button>New Podcast</button>
+            <button onclick="window.location.href = 'create';">New Podcast</button>
             <hr>
             <table>
                 <tr>
@@ -42,10 +42,11 @@ if ($_SESSION["state"] != "active") {
                 </tr>
                 <?php
                 require "../backend/creds.php";
+                require "../backend/database.php";
 
                 $env = loadCreds();
 
-                $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+                $db = new Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
                 $podcasts = $db->getPodcasts();
 
                 for ($i = 0; $i < count($podcasts); $i++){
@@ -62,7 +63,7 @@ if ($_SESSION["state"] != "active") {
             </table>
         </div>
         <div id="episode">
-            <button>New Episode</button>
+        <button onclick="window.location.href = 'create';">New Episode</button>
             <hr>
             <table>
                 <tr>
