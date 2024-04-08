@@ -73,11 +73,6 @@ if ($_SESSION["state"] != "active") {
                     <th>Actions</th>
                 </tr>
                 <?php
-                require "../backend/creds.php";
-
-                $env = loadCreds();
-
-                $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
                 $episodes = $db->getAllEpisodes();
 
                 for ($i = 0; $i < count($episodes); $i++){
