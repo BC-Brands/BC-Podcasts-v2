@@ -3,5 +3,13 @@ RewriteEngine on
 # Exclude Data Directories
 RewriteRule ^(data|files)($|/) - [L]
 
+# Rewrite URLS to remove extensions
+RewriteRule ^podcast/(.*)$ podcast.php?podcast=$1
+RewriteRule ^admin/?$ admin/login.php
+RewriteRule ^admin/home/?$ admin/home.php
+RewriteRule ^admin/create/?$ admin/create.php
+RewriteRule ^admin/edit/podcast/(.*)$ admin/edit.php?type=podcast&id=$1
+RewriteRule ^admin/edit/episode/(.*)$ admin/edit.php?type=episode&id=$1
+
 # Rewrite remaining requests for /site/ to base path
 RewriteRule ^(.*)$ /site/$1

@@ -36,7 +36,53 @@ if (isset($_GET["id"])){
         <main>
             <h1>Edit</h1>
         </main>
-        <p>Coming Soon!</p>
+        <?php
+        $env = loadCreds();
+
+        $db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+
+        if ($type == "podcast"){
+            $url = $db->getPodcastURL($id);
+            $podcasts = $db->getPodcast($url[0]);
+            
+            $form = <<<FORM 
+            <div id="podcast">
+                <form action="update.php?type=podcast&id={$id}" method="POST">
+                    <p>Podcast Name</p>
+                    <input type="text" name="name" value="{$podcasts[0]["name"]}">
+                    <p>Podcast URL</p>
+                    <input type="text" name="url" value="{$podcasts[0]["url"]}">
+                    <p>Podcast Author</p>
+                    <input type="text" name="author" value="{$podcasts[0]["author"]}">
+                    <p>Podcast Description</p>
+                    <input type="text" name="description" value="{$podcasts[0]["description"]}">
+                    <br>
+                    <input type="submit" value="Update">
+                </form>
+            </div>
+            FORM;
+
+            echo $form;
+        }
+        if ($type == "episode"){
+            $episode = $db->getEpidose($id);
+
+            $form = <<<FORM
+            <div id="episode">
+                <form action="update.php?type=episode&id={$id}" method="POST">
+                    <p>Episode Name</p>
+                    <input type="text" name="name" value="{$episode['name']}">
+                    <p>Episode Description</p>
+                    <input type="text" name="description" value="{$episode['description']}">
+                    <br>
+                    <input type="submit" value="Update">
+                </form>
+            </div>
+            FORM;
+
+            echo $form;
+        }
+        ?>
         <footer>
             <p>Powered by <a href="https://github.com/BC-Brands/BC-Podcasts-v2/">BC Podcasts</a></p>
         </footer>

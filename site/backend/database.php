@@ -82,9 +82,35 @@ class Database{
 
             $last_id = $conn->insert_id;
 
-            $stmt = $this->conn->prepare("UPDATE podcasts SET latest = :latest WHERE podcast = :podcast");
+            $stmt = $this->conn->prepare("UPDATE podcasts SET latest = :latest WHERE id = :podcast");
             $stmt->bindParam(":latest", $last_id);
             $stmt->bindParam(":podcast", $podcast);
+            $stmt->execute();
+        } catch (PDOException $e){
+            die("Error inserting data");
+        }
+    }
+    
+    function updatePodcast($id, $name, $description, $author, $url){
+        try{
+            $stmt = $this->conn->prepare("UPDATE podcasts SET name = :name, description = :description, author = :author, url = :url WHERE id = :id");
+            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":description", $description);
+            $stmt->bindParam(":author", $author);
+            $stmt->bindParam(":url", $url);
+            $stmt->bindParam(":id", $id);
+            $stmt->execute();
+        } catch (PDOException $e){
+            die("Error inserting data");
+        }
+    }
+
+    function updateEpisode($id, $name, $description){
+        try{
+            $stmt = $this->conn->prepare("UPDATE episodes SET name = :name, description = :description WHERE id = :id");
+            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":description", $description);
+            $stmt->bindParam(":id", $id);
             $stmt->execute();
         } catch (PDOException $e){
             die("Error inserting data");
@@ -114,6 +140,18 @@ class Database{
             die("Error fetching data");
         }
     }
+    function getPodcastURLFromEpisode($id){
+        try{
+            $stmt = $this->conn->prepare("SELECT podcasts.url FROM podcasts, episodes WHERE episodes.podcast = podcasts.id AND episodes.id = :id");
+            $stmt->bindParam(":id", $id);
+            $stmt->execute();
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
+        } catch (PDOException $e){
+            die("Error fetching data");
+        }
+    }
     function getPodcastInfo($url){
         try{
             $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.author, podcasts.authorEmail, podcasts.description FROM podcasts WHERE url = :url");
@@ -130,6 +168,18 @@ class Database{
         try{
             $stmt = $this->conn->prepare("SELECT episodes.name, episodes.description, episodes.image, episodes.audio FROM podcasts, episodes WHERE episodes.podcast = podcasts.id AND podcasts.id = :id");
             $stmt->bindParam(":id", $podcast);
+            $stmt->execute();
+
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
+        } catch (PDOException $e){
+            die("Error fetching data");
+        }
+    }
+    function getEpisode($id){
+        try{
+            $stmt = $this->conn->prepare("SELECT episodes.name, episodes.description FROM episodes WHERE episodes.id = :id");
+            $stmt->bindParam(":id", $id);
             $stmt->execute();
 
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
