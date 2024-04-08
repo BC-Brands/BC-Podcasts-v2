@@ -1,4 +1,13 @@
 <?php
+//Upload Podcast
+
+$name = htmlspecialchars($_POST["name"]);
+$url = htmlspecialchars($_POST["url"]);
+$author = htmlspecialchars($_POST["author"]);
+$description = htmlspecialchars($_POST["description"]);
+
+$fileField = "image";
+
 /*File Upload Script
 
 Please report any vulnerabilities immediately
@@ -8,12 +17,12 @@ to software@bcwd.site.
 
 //From <input type="file" name="upload" />
 
-if (!isset($_FILES["upload"])){
+if (!isset($_FILES[$fileField])){
     die("There is no file to upload");
 }
 
 //Current (temp) filepath
-$filepath = $_FILES["upload"]["tmp_name"];
+$filepath = $_FILES[$fileField]["tmp_name"];
 
 //Get the size
 $filesize = filesize($filepath);
@@ -33,7 +42,9 @@ if ($filesize > (1 * 1024 * 1024 * 200)){
 
 //Allowed Types
 $allowedTypes = [
-    "audio/mpeg" => "mp3"
+    "audio/mpeg" => "mp3",
+    "image/png" => "png",
+    "image/jpeg" => "jpg"
 ];
 
 if (!in_array($filetype, array_keys($allowedTypes))){
@@ -55,4 +66,16 @@ if (!move_uploaded_file($filepath, $targetDirectory)){
 unlink($filepath);
 
 echo "File Uploaded successfully.";
+
+// Add Podcast
+$imageName = "./files/" . $filename . "." . $extension;
+
+require "../backend/creds.php";
+
+$env = loadCreds();
+
+$db = Database($env["username"], $env["password"], $env["servername"], $env["dbname"]);
+$db->createPodcast($name, $url, $author, $description, $imageName);
+
+header("Location: home.php");
 ?>

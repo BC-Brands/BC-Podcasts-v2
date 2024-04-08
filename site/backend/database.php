@@ -54,6 +54,42 @@ class Database{
         }
     }
 
+    function createPodcast($name, $url, $author, $description, $image){
+        try {
+            $stmt = $this->conn->prepare("INSERT INTO podcasts (name, url, author, description, image, latest) VALUES (:name, :url, :author, :description, :image, :latest");
+            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":url", $url);
+            $stmt->bindParam(":author", $author);
+            $stmt->bindParam(":desctiption", $description);
+            $stmt->bindParam(":image", $image);
+            $stmt->bindParam(":latest", 0);
+            $stmt->execute();
+        } catch (PDOException $e){
+            die("Error inserting data");
+        }          
+    }
+
+    function createEpisode($podcast, $name, $description, $image, $audio){
+        try{
+            $stmt = $this->conn->prepare("INSERT INTO episodes (podcast, name, description, image, published, audio) VALUES (:podcast, :name, :description, :image, NOW(), :audio");
+            $stmt->bindParam(":podcast", $podcast);
+            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":description", $description);
+            $stmt->bindParam(":image", $image);
+            $stmt->bindParam(":audio", $audio);
+            $stmt->execute();
+
+            $last_id = $conn->insert_id;
+
+            $stmt = $this->conn->prepare("UPDATE podcasts SET latest = :latest WHERE podcast = :podcast");
+            $stmt->bindParam(":latest", $last_id);
+            $stmt->bindParam(":podcast", $podcast);
+            $stmt->execute();
+        } catch (PDOException $e){
+            die("Error inserting data");
+        }
+    }
+
     function getPodcasts(){
         try{
             $stmt = $this->conn->prepare("SELECT podcasts.id, podcasts.name, podcasts.url, podcasts.author, podcasts.description, podcasts.image, episodes.name, episodes.audio FROM podcasts, episodes WHERE podcasts.latest = episodes.id");
